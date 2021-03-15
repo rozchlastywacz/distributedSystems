@@ -5,13 +5,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-public class ReadThread extends Thread {
+public class ReadThreadTCP extends Thread {
     private BufferedReader reader;
-    private SRClient client;
+    private Client client;
     private boolean running;
     private Socket socket;
 
-    public ReadThread(SRClient client, Socket socket) {
+    public ReadThreadTCP(Client client, Socket socket) {
         this.client = client;
         this.socket = socket;
         running = true;

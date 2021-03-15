@@ -5,13 +5,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class WriteThread extends Thread {
+public class WriteThreadTCP extends Thread {
     private PrintWriter writer;
-    private SRClient client;
+    private Client client;
     private Socket socket;
     private boolean running;
 
-    public WriteThread(SRClient client, Socket socket) {
+    public WriteThreadTCP(Client client, Socket socket) {
         this.client = client;
         this.socket = socket;
         running = true;

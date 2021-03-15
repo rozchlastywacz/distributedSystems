@@ -6,10 +6,10 @@ import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SRServer {
+public class Server {
     final int PORT = 12345;
-    private Set<SRClientThread> clients;
-    public SRServer(){
+    private Set<ServerTCPClientThread> clients;
+    public Server(){
         clients = new HashSet<>();
     }
 
@@ -31,7 +31,7 @@ public class SRServer {
                     System.out.println("Client socket failure");
                 } 
                 // start new thread for client 
-                SRClientThread clientThread = new SRClientThread(clientSocket, this);
+                ServerTCPClientThread clientThread = new ServerTCPClientThread(clientSocket, this);
                 clientThread.start();
                 clients.add(clientThread);
             }
@@ -57,11 +57,11 @@ public class SRServer {
         }
     }
 
-    public void removeUser(SRClientThread user){
+    public void removeUser(ServerTCPClientThread user){
         clients.remove(user);
     }
 
-    public void sendToOthersViaTCP(SRClientThread sender, String message){
+    public void sendToOthersViaTCP(ServerTCPClientThread sender, String message){
         clients.stream()
                 .filter(client -> !client.equals(sender))
                 .forEach(client -> client.send(message));
@@ -73,7 +73,7 @@ public class SRServer {
         clients.stream()
                 .forEach(client -> client.send(msg));
     }
-    public void sendUserConnectedMessage(SRClientThread sender, String nick){
+    public void sendUserConnectedMessage(ServerTCPClientThread sender, String nick){
         clients.stream()
                 .filter(client -> !client.equals(sender))
                 .forEach(client -> client.send("<Server>: " + nick + " has been connected"));

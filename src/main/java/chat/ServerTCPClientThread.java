@@ -8,14 +8,14 @@ import java.net.Socket;
 
 
 
-public class SRClientThread extends Thread{
+public class ServerTCPClientThread extends Thread{
     private boolean running;
     private Socket clientSocket;
-    private SRServer server;
+    private Server server;
     private String nick;
     private PrintWriter out;
 
-    public SRClientThread(Socket clientSocket, SRServer server){
+    public ServerTCPClientThread(Socket clientSocket, Server server){
         running = true;
         this.server = server;
         this.clientSocket = clientSocket;

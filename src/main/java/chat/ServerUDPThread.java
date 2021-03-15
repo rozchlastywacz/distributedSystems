@@ -5,14 +5,14 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-public class ServerUDPClientThread extends Thread {
+public class ServerUDPThread extends Thread {
     private final int BUFFER_SIZE = 1024;
     private boolean running;
     private DatagramSocket serverSocketUDP;
     private Server server;
     private String nick;
 
-    public ServerUDPClientThread(DatagramSocket serverSocketUDP, Server server) {
+    public ServerUDPThread(DatagramSocket serverSocketUDP, Server server) {
         running = true;
         this.server = server;
         this.serverSocketUDP = serverSocketUDP;
@@ -41,6 +41,7 @@ public class ServerUDPClientThread extends Thread {
         } finally {
             if (serverSocketUDP != null) {
                 serverSocketUDP.close();
+                System.out.println("Server socket UDP closed");
             }
         }
     }

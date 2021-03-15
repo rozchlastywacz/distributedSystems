@@ -46,6 +46,7 @@ public class ServerTCPClientThread extends Thread {
             if (clientSocket != null) {
                 try {
                     clientSocket.close();
+                    System.out.println("Client socket TCP closed");
                 } catch (IOException e) {
                     System.out.println("Client thread socket closing failure");
                 }

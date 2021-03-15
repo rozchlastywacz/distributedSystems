@@ -11,7 +11,7 @@ import java.util.Set;
 public class Server {
     final int PORT = 12345;
     private Set<ServerTCPClientThread> clients;
-    private ServerUDPClientThread UDPThread;
+    private ServerUDPThread UDPThread;
 
     public Server() {
         clients = new HashSet<>();
@@ -30,7 +30,7 @@ public class Server {
         try {
             // create socket
             serverSocketUDP = new DatagramSocket(PORT);
-            UDPThread = new ServerUDPClientThread(serverSocketUDP, this);
+            UDPThread = new ServerUDPThread(serverSocketUDP, this);
             UDPThread.start();
             serverSocketTCP = new ServerSocket(PORT);
             while (true) {
@@ -51,12 +51,17 @@ public class Server {
             System.out.println("Server connection failure");
         } finally {
             System.out.println("Server closing");
-            if (serverSocketTCP != null) {
+            if (serverSocketTCP != null && !serverSocketTCP.isClosed()) {
                 try {
                     serverSocketTCP.close();
+                    System.out.println("Server socket TCP closed");
                 } catch (IOException e) {
                     System.out.println("Server socket closing failure");
                 }
+            }
+            if(serverSocketUDP != null && !serverSocketUDP.isClosed()){
+                serverSocketUDP.close();
+                System.out.println("Server socket UDP closed");
             }
             clients.forEach(t -> {
                 try {

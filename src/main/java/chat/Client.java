@@ -13,49 +13,55 @@ public class Client {
     private final String MULTICAST = "230.0.0.0";
     private final int MULTI_PORT = 4545;
     private String nick;
+
     public static void main(String[] args) throws IOException {
         new Client().run();
     }
 
     public void run() {
         try {
-            // create socket
             nick = System.console().readLine("Say your name: ");
 
             Socket socketTCP = new Socket(HOST_NAME, PORT_NUMBER);
+            ReadThreadTCP readThreadTCP = new ReadThreadTCP(this, socketTCP);
+
             DatagramSocket socketUDP = new DatagramSocket(null);
             socketUDP.bind(new InetSocketAddress(InetAddress.getByName(HOST_NAME), socketTCP.getLocalPort()));
+            WriteUDP writeUDP = new WriteUDP(socketUDP, socketTCP.getPort());
+            ReadThreadUDP readThreadUDP = new ReadThreadUDP(this, socketUDP, socketTCP.getLocalPort());
 
             MulticastSocket multicastSocket = new MulticastSocket(MULTI_PORT);
             InetAddress group = InetAddress.getByName(MULTICAST);
             multicastSocket.joinGroup(group);
             ReadThreadMulti readThreadMulti = new ReadThreadMulti(this, multicastSocket);
-            readThreadMulti.start();
-            WriteThreadMulti writeThreadMulti = new WriteThreadMulti(multicastSocket, MULTI_PORT, group);
-            // System.out.println("port lokalny " + socketTCP.getLocalPort());
-            // System.out.println("port zdalny " + socketTCP.getPort());
-            
-            ReadThreadTCP readThreadTCP = new ReadThreadTCP(this, socketTCP);
-            WriteThreadUDP writeThreadUDP = new WriteThreadUDP(socketUDP, socketTCP.getPort());
-            WriteThreadTCP writeThreadTCP = new WriteThreadTCP(this, socketTCP, writeThreadUDP, writeThreadMulti);
+            WriteMulti writeMulti = new WriteMulti(multicastSocket, MULTI_PORT, group);
 
-            ReadThreadUDP readThreadUDP = new ReadThreadUDP(this, socketUDP, socketTCP.getLocalPort());
+            WriteThread writeThread = new WriteThread(this, socketTCP, writeUDP, writeMulti);
 
-            readThreadTCP.start();
-            writeThreadTCP.start();
-
-            readThreadUDP.start();
-            
-            writeThreadTCP.join();
-            readThreadTCP.kill();
-            readThreadTCP.join();
-
-            readThreadUDP.kill();
-            readThreadUDP.join();
+            execute(readThreadTCP, readThreadUDP, readThreadMulti, writeThread);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void execute(ReadThreadTCP readThreadTCP, ReadThreadUDP readThreadUDP, ReadThreadMulti readThreadMulti,
+            WriteThread writeThread) throws InterruptedException {
+        writeThread.start();
+        readThreadTCP.start();
+        readThreadUDP.start();
+        readThreadMulti.start();
+
+        writeThread.join();
+
+        readThreadTCP.kill();
+        readThreadTCP.join();
+
+        readThreadUDP.kill();
+        readThreadUDP.join();
+
+        readThreadMulti.kill();
+        readThreadMulti.join();
     }
 
     public void setNickname(String nick) {

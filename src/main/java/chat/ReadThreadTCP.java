@@ -29,8 +29,9 @@ public class ReadThreadTCP extends Thread {
             try {
                 String response = reader.readLine();
                 String message = "\r" + response;
-                if(message.length() < clientPrompt.length()){
-                    message = message + new String(new char[clientPrompt.length()-message.length()]).replace('\0', ' ');
+                if (message.length() < clientPrompt.length()) {
+                    message = message
+                            + new String(new char[clientPrompt.length() - message.length()]).replace('\0', ' ');
                 }
                 System.out.println(message);
                 if (client.getNickname() != null) {
@@ -38,9 +39,9 @@ public class ReadThreadTCP extends Thread {
                 }
             } catch (IOException e) {
                 if (socket.isClosed()) {
-                    System.out.println("ReadThread socket closed");
+                    System.out.println("ReadThreadTCP socket closed");
                 } else {
-                    System.out.println("ReadThread reading message failure");
+                    System.out.println("ReadThreadTCP reading message failure");
                 }
                 running = false;
             }

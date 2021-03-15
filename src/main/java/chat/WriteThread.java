@@ -5,15 +5,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class WriteThreadTCP extends Thread {
+public class WriteThread extends Thread {
     private PrintWriter writer;
     private Client client;
     private Socket socket;
     private boolean running;
-    private WriteThreadUDP writeUDP;
-    private WriteThreadMulti writeMulti;
+    private WriteUDP writeUDP;
+    private WriteMulti writeMulti;
 
-    public WriteThreadTCP(Client client, Socket socket, WriteThreadUDP writeUDP, WriteThreadMulti writeMulti) {
+    public WriteThread(Client client, Socket socket, WriteUDP writeUDP, WriteMulti writeMulti) {
         this.client = client;
         this.socket = socket;
         running = true;
@@ -40,9 +40,9 @@ public class WriteThreadTCP extends Thread {
 
             if (message.contains("U")) {
                 writeUDP.send(message);
-            } else if(message.contains("M")){
+            } else if (message.contains("M")) {
                 writeMulti.send(message);
-            }else{
+            } else {
                 writer.println(message);
             }
             if (message.equals("quit")) {

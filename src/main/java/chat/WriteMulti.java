@@ -5,13 +5,12 @@ import java.net.DatagramPacket;
 import java.net.MulticastSocket;
 import java.net.InetAddress;
 
-
-public class WriteThreadMulti {
+public class WriteMulti {
     private MulticastSocket socket;
     private int port;
     private InetAddress group;
 
-    public WriteThreadMulti(MulticastSocket socket, int port, InetAddress group) {
+    public WriteMulti(MulticastSocket socket, int port, InetAddress group) {
         this.socket = socket;
         this.port = port;
         this.group = group;
@@ -28,7 +27,8 @@ public class WriteThreadMulti {
             System.out.println("WriteThreadMulti sending failed");
         }
     }
-    public void close(){
+
+    public void close() {
         socket.close();
     }
 }

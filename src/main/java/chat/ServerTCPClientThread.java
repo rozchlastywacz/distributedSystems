@@ -7,22 +7,20 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
-
-
-public class ServerTCPClientThread extends Thread{
+public class ServerTCPClientThread extends Thread {
     private boolean running;
     private Socket clientSocket;
     private Server server;
     private String nick;
     private PrintWriter out;
 
-    public ServerTCPClientThread(Socket clientSocket, Server server){
+    public ServerTCPClientThread(Socket clientSocket, Server server) {
         running = true;
         this.server = server;
         this.clientSocket = clientSocket;
     }
 
-    public void run(){
+    public void run() {
         try {
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -32,22 +30,20 @@ public class ServerTCPClientThread extends Thread{
             send("<Server>: Hello, " + nick + " !");
             server.sendUserConnectedMessage(this, nick);
             String message;
-            while(running){
+            while (running) {
                 message = in.readLine();
-                if(message.equals("quit")){
+                if (message.equals("quit")) {
                     running = false;
-                }
-                else{
+                } else {
                     server.sendToOthersViaTCP(this, "<" + nick + ">: " + message);
                 }
             }
-            
-            
+
         } catch (Exception e) {
             System.out.println("Client thread communication failure");
-        }finally{
+        } finally {
             server.removeUser(this);
-            if(clientSocket != null){
+            if (clientSocket != null) {
                 try {
                     clientSocket.close();
                 } catch (IOException e) {
@@ -58,19 +54,23 @@ public class ServerTCPClientThread extends Thread{
         }
     }
 
-    public void send(String message){
+    public void send(String message) {
         out.println(message);
     }
-    public void kill(){
+
+    public void kill() {
         running = false;
-    }    
-    public String getNick(){
+    }
+
+    public String getNick() {
         return this.nick;
     }
-    public int getPort(){
+
+    public int getPort() {
         return clientSocket.getPort();
     }
-    public InetAddress gInetAddress(){
+
+    public InetAddress gInetAddress() {
         return clientSocket.getInetAddress();
     }
 

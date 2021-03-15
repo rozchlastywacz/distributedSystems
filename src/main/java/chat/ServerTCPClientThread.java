@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 
 
@@ -65,6 +66,12 @@ public class ServerTCPClientThread extends Thread{
     }    
     public String getNick(){
         return this.nick;
+    }
+    public int getPort(){
+        return clientSocket.getPort();
+    }
+    public InetAddress gInetAddress(){
+        return clientSocket.getInetAddress();
     }
 
 }

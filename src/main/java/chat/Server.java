@@ -1,6 +1,8 @@
 package chat;
 
 import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
@@ -9,22 +11,27 @@ import java.util.Set;
 public class Server {
     final int PORT = 12345;
     private Set<ServerTCPClientThread> clients;
+    private ServerUDPClientThread UDPThread;
     public Server(){
         clients = new HashSet<>();
     }
 
     public void run(){
-        System.out.println("JAVA TCP SERVER");
-        ServerSocket serverSocket = null;
+        System.out.println("Arkadiusz Cwikla - chat");
+        ServerSocket serverSocketTCP = null;
+        DatagramSocket serverSocketUDP = null;
         Socket clientSocket = null;
         
         try {
             // create socket
-            serverSocket = new ServerSocket(PORT);
+            serverSocketUDP = new DatagramSocket(PORT);
+            UDPThread = new ServerUDPClientThread(serverSocketUDP, this);
+            UDPThread.start();
+            serverSocketTCP = new ServerSocket(PORT);
             while(true){
                 try {
                     // accept client
-                    clientSocket = serverSocket.accept();
+                    clientSocket = serverSocketTCP.accept();
                     System.out.println("Client connected");
                     
                 } catch (Exception e) {
@@ -40,9 +47,9 @@ public class Server {
         }
         finally {
             System.out.println("Server closing");
-            if (serverSocket != null){
+            if (serverSocketTCP != null){
                 try {
-                    serverSocket.close();
+                    serverSocketTCP.close();
                 } catch (IOException e) {
                     System.out.println("Server socket closing failure");
                 }
@@ -65,6 +72,12 @@ public class Server {
         clients.stream()
                 .filter(client -> !client.equals(sender))
                 .forEach(client -> client.send(message));
+    }
+
+    public void sendToOthersViaUDP(String message, InetAddress address, int port){
+        clients.stream()
+                .filter(client -> client.getPort()!=port)
+                .forEach(client -> UDPThread.send(message, address, client.getPort()));
     }
 
     public void sendUserDisconnectedMessage(String nick){

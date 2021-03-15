@@ -1,6 +1,9 @@
 package chat;
 
 import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class Client {
@@ -14,15 +17,32 @@ public class Client {
     public void run() {
         try {
             // create socket
-            Socket socket = new Socket(hostName, portNumber);
             nick = System.console().readLine("Say your name: ");
-            ReadThreadTCP readThread = new ReadThreadTCP(this, socket);
-            WriteThreadTCP writeThread = new WriteThreadTCP(this, socket);
-            readThread.start();
-            writeThread.start();
-            writeThread.join();
-            readThread.kill();
-            readThread.join();
+
+            Socket socketTCP = new Socket(hostName, portNumber);
+            DatagramSocket socketUDP = new DatagramSocket(null);
+            socketUDP.bind(new InetSocketAddress(InetAddress.getByName(hostName), socketTCP.getLocalPort()));
+            
+            // System.out.println("port lokalny " + socketTCP.getLocalPort());
+            // System.out.println("port zdalny " + socketTCP.getPort());
+            
+            ReadThreadTCP readThreadTCP = new ReadThreadTCP(this, socketTCP);
+            WriteThreadUDP writeThreadUDP = new WriteThreadUDP(socketUDP, socketTCP.getPort());
+            WriteThreadTCP writeThreadTCP = new WriteThreadTCP(this, socketTCP, writeThreadUDP);
+
+            ReadThreadUDP readThreadUDP = new ReadThreadUDP(this, socketUDP, socketTCP.getLocalPort());
+
+            readThreadTCP.start();
+            writeThreadTCP.start();
+
+            readThreadUDP.start();
+            
+            writeThreadTCP.join();
+            readThreadTCP.kill();
+            readThreadTCP.join();
+
+            readThreadUDP.kill();
+            readThreadUDP.join();
 
         } catch (Exception e) {
             e.printStackTrace();

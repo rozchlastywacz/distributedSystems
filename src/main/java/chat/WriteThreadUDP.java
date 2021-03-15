@@ -23,4 +23,8 @@ public class WriteThreadUDP{
         }
 
     }
+
+    public void close(){
+        socket.close();
+    }
 }

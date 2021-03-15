@@ -2,20 +2,19 @@ package chat;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
+import java.net.MulticastSocket;
 
-public class ReadThreadUDP extends Thread{
+public class ReadThreadMulti extends Thread{
     private final int BUFFER_SIZE = 1024;
     private Client client;
     private boolean running;
-    private DatagramSocket socket;
-    private int port;
+    private MulticastSocket socket;
 
-    public ReadThreadUDP(Client client, DatagramSocket socket, int port) {
+
+    public ReadThreadMulti(Client client, MulticastSocket socket) {
         this.client = client;
         this.socket = socket;
         running = true;
-        this.port = port;
     }
 
     public void run() {
@@ -23,10 +22,10 @@ public class ReadThreadUDP extends Thread{
         while (running) {
             try {
                 byte[] buffer = new byte[BUFFER_SIZE];
-                DatagramPacket responsPacket = new DatagramPacket(buffer, BUFFER_SIZE, socket.getInetAddress(), port);
+                DatagramPacket responsPacket = new DatagramPacket(buffer, BUFFER_SIZE);
                 socket.receive(responsPacket);
                 String response = new String(buffer, 0, responsPacket.getLength());
-                String message = "\r" + response;
+                String message = "\r" + "<Sent via multicast> "+ response;
                 if(message.length() < clientPrompt.length()){
                     message = message + new String(new char[clientPrompt.length()-message.length()]).replace('\0', ' ');
                 }
@@ -36,9 +35,9 @@ public class ReadThreadUDP extends Thread{
                 }
             } catch (IOException e) {
                 if (socket.isClosed()) {
-                    System.out.println("ReadThreadUDP socket closed");
+                    System.out.println("ReadThreadMulti socket closed");
                 } else {
-                    System.out.println("ReadThreadUDP reading message failure");
+                    System.out.println("ReadThreadMulti reading message failure");
                 }
                 running = false;
             }

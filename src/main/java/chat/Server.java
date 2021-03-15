@@ -18,6 +18,13 @@ public class Server {
 
     public void run(){
         System.out.println("Arkadiusz Cwikla - chat");
+        System.out.println(
+            "-------------- INFO START -----------------------\n" +
+            "1. [message] + ENTER is sent via TCP\n" +
+            "2. U [message] + ENTER is sent via UDP\n" +
+            "3. M [message] + ENTER is sent via UDP multicast\n" +
+            "-------------- INFO END --------------------------" 
+        );
         ServerSocket serverSocketTCP = null;
         DatagramSocket serverSocketUDP = null;
         Socket clientSocket = null;

@@ -11,12 +11,14 @@ public class WriteThreadTCP extends Thread {
     private Socket socket;
     private boolean running;
     private WriteThreadUDP writeUDP;
+    private WriteThreadMulti writeMulti;
 
-    public WriteThreadTCP(Client client, Socket socket, WriteThreadUDP writeUDP) {
+    public WriteThreadTCP(Client client, Socket socket, WriteThreadUDP writeUDP, WriteThreadMulti writeMulti) {
         this.client = client;
         this.socket = socket;
         running = true;
         this.writeUDP = writeUDP;
+        this.writeMulti = writeMulti;
         try {
             writer = new PrintWriter(socket.getOutputStream(), true);
         } catch (Exception e) {
@@ -38,7 +40,9 @@ public class WriteThreadTCP extends Thread {
 
             if (message.contains("U")) {
                 writeUDP.send(message);
-            } else {
+            } else if(message.contains("M")){
+                writeMulti.send(message);
+            }else{
                 writer.println(message);
             }
             if (message.equals("quit")) {
@@ -47,6 +51,8 @@ public class WriteThreadTCP extends Thread {
         }
         try {
             socket.close();
+            writeUDP.close();
+            writeMulti.close();
         } catch (IOException e) {
             System.out.println("WriteThread closing socket failure");
         }

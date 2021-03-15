@@ -3,7 +3,6 @@ package chat;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.Socket;
 
 public class ReadThreadUDP extends Thread{
     private final int BUFFER_SIZE = 1024;

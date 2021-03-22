@@ -76,7 +76,7 @@ public class Ekipa {
             String product = br.readLine();
             if(TYPES.contains(product)){
                 String supplier_key = SUPPLIER_KEY + product;
-                String message = "<" + teamName + "> " + "Hello, we want to order " + product;
+                String message = TEAM_PROMPT + "Hello, we want to order " + product;
                 // publish
                 channel.basicPublish(EXCHANGE_NAME, supplier_key, null, message.getBytes("UTF-8"));
                 // printRabbit("Sent: " + message +" via " + EXCHANGE_NAME + " to " + supplier_key);

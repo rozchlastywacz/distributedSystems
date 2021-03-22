@@ -46,6 +46,7 @@ public class Z1_Consumer {
         // start listening
         System.out.println("Waiting for messages...");
         channel.basicConsume(QUEUE_NAME, false, consumer);
+        System.out.println("I`m dead...");
 //        channel.basicConsume(QUEUE_NAME, true, consumer);
 
         // close

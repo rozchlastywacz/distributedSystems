@@ -94,7 +94,9 @@ public class MonitoringStation extends AbstractBehavior<Messages.Message> {
     }
 
     private Behavior<Messages.Message> onDatabaseToMS(Messages.DatabaseToMS dbtms) {
-        System.out.println("---Satellite " + dbtms.satelliteID + " had " + dbtms.errors + " reported---");
+        if(dbtms.errors > 0) {
+            System.out.println("---Satellite " + dbtms.satelliteID + " had " + dbtms.errors + " reported---");
+        }
         return this;
     }
 

@@ -1,0 +1,11 @@
+<h2>Prognoza pogody</h2>
+Miejscowość: {{city}} <br>
+Liczba dni prognozy: {{days}} <br>
+Dane: <br>
+<ul>
+    <li>Średnia temperatura w dzień wyniesie: {{'%0.2f' | format(avg_day|float)}} stopni Celsjusza</li>
+    <li>Średnia temperatura w nocy wyniesie: {{'%0.2f' | format(avg_night|float)}} stopni Celsjusza</li>
+    <li>Średnie ciśnienie wyniesie: {{'%0.2f' | format(avg_pressure|float)}} hektopaskali</li>
+    <li>Średnie zachmurzenie wyniesie: {{'%0.2f' | format(avg_clouds|float)}} %</li>
+    <li>Średnia wilgotność wyniesie: {{'%0.2f' | format(avg_humidity|float)}} %</li>
+  </ul>

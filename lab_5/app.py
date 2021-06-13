@@ -73,8 +73,9 @@ def weather_form():
                     avg_pressure=avg_pressure, 
                     avg_humidity=avg_humidity, 
                     avg_clouds=avg_clouds)    
-            else:
-                return "Wystąpił błąd"
+            elif wr_json["cod"] == "404":
+                wr_json_msg = wr_json['message']
+                return f'Wystąpił błąd: {wr_json_msg}'
         else:
             return "Liczba dni powinna być między 1 a 17"
     else:

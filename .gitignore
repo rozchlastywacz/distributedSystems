@@ -16,6 +16,9 @@ buildNumber.properties
 #
 *.iml
 .idea/*
+# egenerated files from grpc and ice
+generated
+gen
 !.idea/runConfigurations/
 
 #
@@ -26,7 +29,7 @@ buildNumber.properties
 .factorypath
 .project
 .vscode/
-
+bin/
 #
 # moje
 #
@@ -36,3 +39,8 @@ lib/
 *.sqlite
 venv
 __pycache__
+*.exe
+*.pem
+nginx-1*
+protoc-3*
+*.jks
